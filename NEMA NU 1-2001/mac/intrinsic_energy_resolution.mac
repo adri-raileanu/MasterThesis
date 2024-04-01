@@ -1,0 +1,363 @@
+# -------------------
+# Philips BrightView SPECT (without CT)
+# -------------------
+
+# World
+# Define the world dimensions
+##
+/gate/world/geometry/setXLength 550 cm
+/gate/world/geometry/setYLength 550 cm
+/gate/world/geometry/setZLength 550 cm
+
+# M A N D A T O R Y
+#####
+/gate/geometry/setMaterialDatabase data/GateMaterials.db
+
+# G E O M E T R Y
+#####
+
+# Default orientation is collimator look towards Z axis (photon going towards collimator are -Z)
+# Rotation around X to start looking towards Y, like CT image.
+
+# SPECT Head: main volume, everything is included in SPECThead
+
+/gate/world/daughters/name SPECThead
+/gate/world/daughters/insert box
+/gate/SPECThead/geometry/setXLength 53. cm  
+/gate/SPECThead/geometry/setYLength 64. cm
+/gate/SPECThead/geometry/setZLength 19. cm
+/gate/SPECThead/placement/setTranslation 0. 0. -9.5 cm
+/gate/SPECThead/moves/insert orbiting
+/gate/SPECThead/orbiting/disableAutoRotation
+/gate/SPECThead/setMaterial Air
+/gate/SPECThead/vis/forceWireframe
+/gate/SPECThead/vis/setVisible
+/gate/SPECThead/attachPhantomSD
+
+
+# Shielding: Aluminium Cover
+/gate/SPECThead/daughters/name shielding_aluminium_cover
+/gate/SPECThead/daughters/insert box
+/gate/shielding_aluminium_cover/geometry/setXLength 53. cm
+/gate/shielding_aluminium_cover/geometry/setYLength 64. cm
+/gate/shielding_aluminium_cover/geometry/setZLength 19. cm
+/gate/shielding_aluminium_cover/placement/setTranslation 0. 0. -2.92 cm
+/gate/shielding_aluminium_cover/setMaterial Aluminium
+/gate/shielding_aluminium_cover/vis/setColor blue
+/gate/shielding_aluminium_cover/vis/forceWireframe
+/gate/shielding_aluminium_cover/vis/setVisible
+/gate/shielding_aluminium_cover/attachPhantomSD
+
+# Shielding: Lead Cover
+
+/gate/shielding_aluminium_cover/daughters/name shielding_lead_cover
+/gate/shielding_aluminium_cover/daughters/insert box
+/gate/shielding_lead_cover/geometry/setXLength 47.6 cm
+/gate/shielding_lead_cover/geometry/setYLength 58.6 cm
+/gate/shielding_lead_cover/geometry/setZLength 16.5 cm
+/gate/shielding_lead_cover/placement/setTranslation 0. 0. 1.25 cm	
+/gate/shielding_lead_cover/setMaterial Lead
+/gate/shielding_lead_cover/vis/setColor red
+/gate/shielding_lead_cover/vis/forceWireframe
+/gate/shielding_lead_cover/vis/setVisible
+/gate/shielding_lead_cover/attachPhantomSD
+
+# Crystal: Air Gap
+
+/gate/shielding_lead_cover/daughters/name air_gap
+/gate/shielding_lead_cover/daughters/insert box
+/gate/air_gap/geometry/setXLength 40.6 cm
+/gate/air_gap/geometry/setYLength 54. cm
+/gate/air_gap/geometry/setZLength 0.5 cm
+/gate/air_gap/placement/setTranslation 0. 0. 8. cm
+/gate/air_gap/setMaterial Air
+/gate/air_gap/vis/setColor white
+/gate/air_gap/vis/setVisible
+
+# Crystal: Aluminium Cover
+/gate/shielding_lead_cover/daughters/name aluminium_crystal
+/gate/shielding_lead_cover/daughters/insert box
+/gate/aluminium_crystal/geometry/setXLength 40.6 cm
+/gate/aluminium_crystal/geometry/setYLength 54 cm
+/gate/aluminium_crystal/geometry/setZLength 0.1 cm
+/gate/aluminium_crystal/placement/setTranslation 0. 0. 7.7 cm
+/gate/aluminium_crystal/setMaterial Aluminium
+/gate/aluminium_crystal/vis/setColor blue
+/gate/aluminium_crystal/vis/forceWireframe
+/gate/aluminium_crystal/vis/setVisible
+/gate/aluminium_crystal/attachPhantomSD
+
+# Shielding: crystal
+/gate/shielding_lead_cover/daughters/name crystal_volume
+/gate/shielding_lead_cover/daughters/insert box
+/gate/crystal_volume/geometry/setXLength 40.6 cm
+/gate/crystal_volume/geometry/setYLength 54. cm
+/gate/crystal_volume/geometry/setZLength 0.95 cm
+/gate/crystal_volume/placement/setTranslation 0. 0. 7.175 cm
+/gate/crystal_volume/setMaterial NaITl
+/gate/crystal_volume/vis/setColor yellow
+/gate/crystal_volume/vis/setVisible
+# special command to say that this volume is the crystal
+/gate/systems/SPECThead/crystal/attach crystal_volume
+/gate/crystal_volume/attachCrystalSD
+
+# Backside: Light Guide
+
+/gate/shielding_lead_cover/daughters/name light_guide
+/gate/shielding_lead_cover/daughters/insert box
+/gate/light_guide/geometry/setXLength 40.6 cm
+/gate/light_guide/geometry/setYLength 54. cm
+/gate/light_guide/geometry/setZLength 0.95 cm
+/gate/light_guide/placement/setTranslation 0. 0. 6.225 cm
+/gate/light_guide/setMaterial Glass
+/gate/light_guide/vis/setColor green
+/gate/light_guide/vis/forceWireframe
+/gate/light_guide/vis/setVisible
+/gate/light_guide/attachPhantomSD
+
+#Backside: Optical Coupling
+
+/gate/shielding_lead_cover/daughters/name optical_coupling
+/gate/shielding_lead_cover/daughters/insert box
+/gate/optical_coupling/geometry/setXLength 40.6 cm
+/gate/optical_coupling/geometry/setYLength 54. cm
+/gate/optical_coupling/geometry/setZLength 0.01 cm
+/gate/optical_coupling/placement/setTranslation 0. 0. 5.745 cm
+/gate/optical_coupling/setMaterial Silicon
+/gate/optical_coupling/vis/setColor white
+/gate/optical_coupling/vis/forceWireframe
+/gate/optical_coupling/vis/setVisible
+/gate/optical_coupling/attachPhantomSD
+
+# Shielding: Photomultipliers
+# The back-side is fairly complex, and may have a strong influence on the
+# spectrum: the model shown here is simplified
+/gate/shielding_lead_cover/daughters/name shielding_backside
+/gate/shielding_lead_cover/daughters/insert box
+/gate/shielding_backside/geometry/setXLength 40.6 cm
+/gate/shielding_backside/geometry/setYLength 54. cm
+/gate/shielding_backside/geometry/setZLength 13.4 cm
+/gate/shielding_backside/placement/setTranslation 0. 0. -0.96 cm
+/gate/shielding_backside/setMaterial Backscatter
+/gate/shielding_backside/vis/setColor green
+/gate/shielding_backside/vis/forceWireframe
+/gate/shielding_backside/vis/setVisible
+/gate/shielding_backside/attachPhantomSD
+
+#Shielding: Electronics
+/gate/shielding_lead_cover/daughters/name electronic_board
+/gate/shielding_lead_cover/daughters/insert box
+/gate/electronic_board/geometry/setXLength 40.6 cm
+/gate/electronic_board/geometry/setYLength 54. cm
+/gate/electronic_board/geometry/setZLength 0.5 cm
+/gate/electronic_board/placement/setTranslation 0. 0. -7.91 cm
+/gate/electronic_board/setMaterial Electronics
+/gate/electronic_board/vis/setColor magenta
+/gate/electronic_board/vis/forceWireframe
+/gate/electronic_board/vis/setVisible
+/gate/electronic_board/attachPhantomSD
+
+# S O U R C E  S H I E L D
+##
+# Create the source shield volumes
+##
+/gate/world/daughters/name source_shield
+/gate/world/daughters/insert box
+/gate/source_shield/geometry/setXLength 5. cm
+/gate/source_shield/geometry/setYLength 5. cm 
+/gate/source_shield/geometry/setZLength 5. cm 
+/gate/source_shield/placement/setTranslation 0. 0. 270.5 cm
+/gate/source_shield/setMaterial Lead
+/gate/source_shield/vis/setColor yellow
+/gate/source_shield/vis/forceWireframe
+/gate/source_shield/vis/setVisible
+/gate/source_shield/attachPhantomSD
+
+/gate/source_shield/daughters/name inside_shield
+/gate/source_shield/daughters/insert box
+/gate/inside_shield/geometry/setXLength 3. cm
+/gate/inside_shield/geometry/setYLength 3. cm 
+/gate/inside_shield/geometry/setZLength 4. cm 
+/gate/inside_shield/placement/setTranslation 0. 0. -0.5 cm
+/gate/inside_shield/setMaterial Air
+/gate/inside_shield/vis/setColor red
+/gate/inside_shield/vis/forceWireframe
+/gate/inside_shield/vis/setVisible
+
+# C O P P E R  P L A T E S
+##
+/gate/world/daughters/name copper_plate
+/gate/world/daughters/insert box
+/gate/copper_plate/geometry/setXLength 5. cm
+/gate/copper_plate/geometry/setYLength 5. cm 
+/gate/copper_plate/geometry/setZLength 0.2 cm 
+/gate/copper_plate/placement/setTranslation 0. 0. 267.9 cm
+/gate/copper_plate/setMaterial Lead
+/gate/copper_plate/vis/setColor blue
+/gate/copper_plate/vis/forceWireframe
+/gate/copper_plate/vis/setVisible
+/gate/copper_plate/attachPhantomSD
+
+# L E A D  M A S K
+####
+
+/gate/world/daughters/name lead_mask
+/gate/world/daughters/insert box
+/gate/lead_mask/geometry/setXLength 53. cm
+/gate/lead_mask/geometry/setYLength 64. cm
+/gate/lead_mask/geometry/setZLength 0.3 cm
+/gate/lead_mask/placement/setTranslation 0. 0. 0.15 cm
+/gate/lead_mask/setMaterial Lead
+/gate/lead_mask/vis/setColor green
+/gate/lead_mask/vis/forceWireframe
+/gate/lead_mask/vis/setVisible
+/gate/lead_mask/attachPhantomSD
+
+
+# A I R  A P P E R T U R E 
+####
+/gate/lead_mask/daughters/name apperture
+/gate/lead_mask/daughters/insert box
+/gate/apperture/geometry/setXLength 40.6 cm
+/gate/apperture/geometry/setYLength 54. cm
+/gate/apperture/geometry/setZLength 0.3 cm
+/gate/apperture/placement/setTranslation 0. 0. 0. cm
+/gate/apperture/setMaterial Air
+
+
+#  P H Y S I C S
+#####
+/gate/physics/addPhysicsList emstandard_opt3
+#/gate/physics/addProcess RadioactiveDecay
+
+#  C U T S
+#####
+# High cut by default
+/gate/physics/Gamma/SetCutInRegion      world 1 km
+/gate/physics/Electron/SetCutInRegion   world 1 km
+/gate/physics/Positron/SetCutInRegion   world 1 km
+
+# Low cut in the phantom -> bremsstrahlung
+#/gate/physics/Gamma/SetCutInRegion      phantom 0.5 mm
+#/gate/physics/Electron/SetCutInRegion   phantom 0.5 mm
+#/gate/physics/Positron/SetCutInRegion   phantom 0.5 mm
+
+# Low cut in the spect
+#/gate/physics/Gamma/SetCutInRegion      SPECThead 0.5 mm
+#/gate/physics/Electron/SetCutInRegion   SPECThead 0.5 mm
+#/gate/physics/Positron/SetCutInRegion   SPECThead 0.5 mm
+
+# I N I T I A L I Z A T I O N
+#####
+
+/gate/run/initialize
+
+# V I S U A L I S A T I O N
+#####
+/vis/disable
+#/control/execute mac/vis.mac
+
+# S O U R C E
+#####
+
+/gate/source/addSource gamma_point
+/gate/source/gamma_point/setActivity 250. MBq
+/gate/source/gamma_point/gps/centre 0. 0. 270. cm
+/gate/source/gamma_point/gps/particle gamma
+/gate/source/gamma_point/gps/energytype Mono
+/gate/source/gamma_point/gps/monoenergy 122.1 keV
+#/gate/source/gamma_point/gps/monoenergy 140.5 keV
+/gate/source/gamma_point/gps/type Volume
+/gate/source/gamma_point/gps/shape Sphere
+/gate/source/gamma_point/gps/radius 0.1 mm
+/gate/source/gamma_point/gps/angtype iso
+# SET MIN AND MAX EMISSION ANGLES
+/gate/source/gamma_point/gps/mintheta 0. deg
+/gate/source/gamma_point/gps/maxtheta 180. deg
+/gate/source/gamma_point/gps/minphi 0. deg
+/gate/source/gamma_point/gps/maxphi 360. deg
+/gate/source/list
+
+# D I G I T I Z E R
+#####
+
+#Adder
+/gate/digitizer/Singles/insert adder
+
+# Readout
+/gate/digitizer/Singles/insert readout
+#/gate/digitizer/Singles/readout/setPolicy TakeEnergyCentroid
+/gate/digitizer/Singles/readout/setDepth 1
+
+#Energy blurring
+/gate/digitizer/Singles/insert blurring
+/gate/digitizer/Singles/blurring/setLaw inverseSquare
+/gate/digitizer/Singles/blurring/inverseSquare/setResolution 0.09
+/gate/digitizer/Singles/blurring/inverseSquare/setEnergyOfReference 140.5 keV
+
+#Spatial blurring
+/gate/digitizer/Singles/insert spblurring
+/gate/digitizer/Singles/spblurring/setSpresolution 3.2 mm
+
+#Energy cut
+/gate/digitizer/Singles/insert thresholder
+/gate/digitizer/Singles/thresholder/setThreshold 109. keV
+/gate/digitizer/Singles/insert upholder
+/gate/digitizer/Singles/upholder/setUphold 134. keV
+
+#/gate/digitizer/Singles/insert thresholder
+#/gate/digitizer/Singles/thresholder/setThreshold 126. keV
+#/gate/digitizer/Singles/insert upholder
+#/gate/digitizer/Singles/upholder/setUphold 154. keV
+
+# ---------------------------------------------
+# OUTPUT
+# ---------------------------------------------
+
+# Save particles stats
+/gate/actor/addActor               SimulationStatisticActor stat
+/gate/actor/stat/save              output/stats.txt
+/gate/actor/stat/saveEveryNSeconds 10
+
+# Generic ROOT output
+/gate/output/root/enable
+/gate/output/root/setFileName output/intrinsic_energy_resolution
+#/gate/output/root/setRootCoincidencesFlag   0
+
+# P R O J E C T I O N
+#####
+/gate/output/projection/enable
+/gate/output/projection/setFileName output/SPECTProjection
+/gate/output/projection/pixelSizeX 4.64 mm
+/gate/output/projection/pixelSizeY 4.64 mm
+/gate/output/projection/pixelNumberX 128
+/gate/output/projection/pixelNumberY 128
+
+# Specify the projection plane (XY, YZ or ZX)
+##
+/gate/output/projection/projectionPlane XY
+
+# E X P E R I M E N T 
+#####
+
+/gate/application/setTotalNumberOfPrimaries 450000000000
+
+#/gate/application/setTimeSlice      1.  s
+#/gate/application/setTimeStart      0.    s
+#/gate/application/setTimeStop      90.  s
+
+/gate/application/setTimeSlice      2000.  s
+/gate/application/setTimeStart      0.    s
+/gate/application/setTimeStop       2000.  s
+
+
+# V E R B O S I T Y
+#####
+
+/control/execute mac/Verbose.mac
+
+# L E T' S   R U N   T H E   S I M U L A T I O N  !
+#####
+/gate/random/setEngineSeed auto
+/gate/random/setEngineName MersenneTwister
+/gate/application/startDAQ
