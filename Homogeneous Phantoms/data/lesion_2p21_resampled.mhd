@@ -1,0 +1,14 @@
+ObjectType = Image
+NDims = 3
+BinaryData = True
+BinaryDataByteOrderMSB = False
+CompressedData = True
+CompressedDataSize = 3079
+TransformMatrix = -1 0 0 0 -1 0 0 0 1
+Offset = 135.55900573730469 182.22700500488278 -313.25601196289062
+CenterOfRotation = 0 0 0
+AnatomicalOrientation = LPI
+ElementSpacing = 4.6399999999999997 4.6399999999999997 4.6399999999999997
+DimSize = 53 46 48
+ElementType = MET_UINT
+ElementDataFile = lesion_2p21_resampled.zraw
